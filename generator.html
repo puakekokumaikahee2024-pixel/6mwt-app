@@ -101,12 +101,9 @@ body {
   .grid-3, .grid-4 { grid-template-columns: 1fr 1fr; }
   .grid-2 { grid-template-columns: 1fr; }
 
-  /* 氏名を全幅、年齢・身長を2列に */
+  /* スマホ: 氏名・年齢・身長をすべて縦1列に */
   .grid-name-age-height {
-    grid-template-columns: 1fr 1fr;
-  }
-  .grid-name-age-height .field-name {
-    grid-column: 1 / -1;
+    grid-template-columns: 1fr;
   }
 
   .app-header { padding: 20px 16px 16px; }
@@ -153,8 +150,6 @@ body {
 
 /* ===== VITAL SIGN GRID ===== */
 .vital-wrap { width: 100%; }
-
-/* PC・タブレット: 横並びグリッド */
 .vital-grid {
   display: grid;
   grid-template-columns: 110px 1fr 80px 75px;
@@ -163,8 +158,7 @@ body {
 }
 .vital-row-label {
   font-size: 11px; font-weight: 700; color: var(--gray);
-  padding-top: 22px;
-  line-height: 1.4;
+  padding-top: 22px; line-height: 1.4;
 }
 .vital-col-header {
   font-size: 10px; font-weight: 700; color: var(--blue);
@@ -173,47 +167,46 @@ body {
   line-height: 1.3;
 }
 
-/* スマホ: カード形式に切り替え */
+/* スマホ: バイタルを1行ずつのカードに */
 @media (max-width: 600px) {
-  .vital-grid { display: none; } /* グリッドを非表示 */
-  .vital-cards { display: flex; flex-direction: column; gap: 10px; }
-  .vital-card {
+  .vital-grid { display: none; }
+
+  .vital-sp { display: flex; flex-direction: column; gap: 12px; }
+  .vital-sp-row {
     background: #fafcff;
     border: 1.5px solid #d0dcea;
     border-radius: 10px;
     padding: 12px 14px;
   }
-  .vital-card-title {
+  .vital-sp-title {
     font-size: 12px; font-weight: 700; color: var(--blue);
-    margin-bottom: 10px;
-    padding-bottom: 6px;
+    margin-bottom: 10px; padding-bottom: 6px;
     border-bottom: 1px solid var(--blue-light);
   }
-  .vital-card-row {
+  .vital-sp-fields {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     gap: 8px;
   }
-  .vital-card-field label {
+  .vital-sp-field label {
     font-size: 10px; font-weight: 700; color: var(--gray);
     display: block; margin-bottom: 4px;
   }
-  .vital-card-field input {
+  .vital-sp-field input {
     width: 100%; border: 1.5px solid #d0dcea;
-    border-radius: 8px; padding: 8px 8px;
+    border-radius: 8px; padding: 8px 6px;
     font-size: 14px; font-family: 'BIZ UDPGothic', sans-serif;
     color: var(--text); background: white;
     outline: none; box-sizing: border-box;
   }
-  .vital-card-field input:focus {
+  .vital-sp-field input:focus {
     border-color: var(--blue);
     box-shadow: 0 0 0 3px rgba(26,95,168,0.1);
   }
 }
 
-/* PC: カード形式を非表示 */
 @media (min-width: 601px) {
-  .vital-cards { display: none; }
+  .vital-sp { display: none; }
 }
 
 /* RESULTS */
@@ -609,7 +602,7 @@ body {
   <div class="card">
     <div class="card-title">💓 バイタルサイン</div>
 
-    <!-- PC用: 横グリッド表示 -->
+    <!-- PC用グリッド -->
     <div class="vital-wrap">
       <div class="vital-grid">
         <div></div>
@@ -639,73 +632,73 @@ body {
       </div>
     </div>
 
-    <!-- スマホ用: カード形式 -->
-    <div class="vital-cards">
-      <div class="vital-card">
-        <div class="vital-card-title">🔵 安静時① （条件①前）</div>
-        <div class="vital-card-row">
-          <div class="vital-card-field">
+    <!-- スマホ用カード -->
+    <div class="vital-sp">
+      <div class="vital-sp-row">
+        <div class="vital-sp-title">🔵 安静時①（条件①前）</div>
+        <div class="vital-sp-fields">
+          <div class="vital-sp-field">
             <label>血圧 (mmHg)</label>
-            <input type="text" placeholder="135/79" oninput="document.getElementById('bp_rest1').value=this.value">
+            <input type="text" placeholder="135/79" oninput="syncVital('bp_rest1',this.value)">
           </div>
-          <div class="vital-card-field">
+          <div class="vital-sp-field">
             <label>脈拍 (回/分)</label>
-            <input type="number" placeholder="62" min="30" max="200" oninput="document.getElementById('hr_rest1').value=this.value">
+            <input type="number" placeholder="62" oninput="syncVital('hr_rest1',this.value)">
           </div>
-          <div class="vital-card-field">
+          <div class="vital-sp-field">
             <label>SpO2 (%)</label>
-            <input type="number" placeholder="96" min="70" max="100" oninput="document.getElementById('spo2_rest1').value=this.value">
+            <input type="number" placeholder="96" oninput="syncVital('spo2_rest1',this.value)">
           </div>
         </div>
       </div>
-      <div class="vital-card">
-        <div class="vital-card-title">🔴 条件①後 （自由速度直後）</div>
-        <div class="vital-card-row">
-          <div class="vital-card-field">
+      <div class="vital-sp-row">
+        <div class="vital-sp-title">🔴 条件①後（自由速度直後）</div>
+        <div class="vital-sp-fields">
+          <div class="vital-sp-field">
             <label>血圧 (mmHg)</label>
-            <input type="text" placeholder="152/85" oninput="document.getElementById('bp_ex1').value=this.value">
+            <input type="text" placeholder="152/85" oninput="syncVital('bp_ex1',this.value)">
           </div>
-          <div class="vital-card-field">
+          <div class="vital-sp-field">
             <label>脈拍 (回/分)</label>
-            <input type="number" placeholder="68" min="30" max="220" oninput="document.getElementById('hr_ex1').value=this.value">
+            <input type="number" placeholder="68" oninput="syncVital('hr_ex1',this.value)">
           </div>
-          <div class="vital-card-field">
+          <div class="vital-sp-field">
             <label>SpO2 (%)</label>
-            <input type="number" placeholder="95" min="70" max="100" oninput="document.getElementById('spo2_ex1').value=this.value">
+            <input type="number" placeholder="95" oninput="syncVital('spo2_ex1',this.value)">
           </div>
         </div>
       </div>
-      <div class="vital-card">
-        <div class="vital-card-title">🔵 安静時② （条件②前）</div>
-        <div class="vital-card-row">
-          <div class="vital-card-field">
+      <div class="vital-sp-row">
+        <div class="vital-sp-title">🔵 安静時②（条件②前）</div>
+        <div class="vital-sp-fields">
+          <div class="vital-sp-field">
             <label>血圧 (mmHg)</label>
-            <input type="text" placeholder="135/79" oninput="document.getElementById('bp_rest2').value=this.value">
+            <input type="text" placeholder="135/79" oninput="syncVital('bp_rest2',this.value)">
           </div>
-          <div class="vital-card-field">
+          <div class="vital-sp-field">
             <label>脈拍 (回/分)</label>
-            <input type="number" placeholder="62" min="30" max="200" oninput="document.getElementById('hr_rest2').value=this.value">
+            <input type="number" placeholder="62" oninput="syncVital('hr_rest2',this.value)">
           </div>
-          <div class="vital-card-field">
+          <div class="vital-sp-field">
             <label>SpO2 (%)</label>
-            <input type="number" placeholder="96" min="70" max="100" oninput="document.getElementById('spo2_rest2').value=this.value">
+            <input type="number" placeholder="96" oninput="syncVital('spo2_rest2',this.value)">
           </div>
         </div>
       </div>
-      <div class="vital-card">
-        <div class="vital-card-title">🔴 条件②後 （Borg調整直後）</div>
-        <div class="vital-card-row">
-          <div class="vital-card-field">
+      <div class="vital-sp-row">
+        <div class="vital-sp-title">🔴 条件②後（Borg調整直後）</div>
+        <div class="vital-sp-fields">
+          <div class="vital-sp-field">
             <label>血圧 (mmHg)</label>
-            <input type="text" placeholder="137/82" oninput="document.getElementById('bp_ex2').value=this.value">
+            <input type="text" placeholder="137/82" oninput="syncVital('bp_ex2',this.value)">
           </div>
-          <div class="vital-card-field">
+          <div class="vital-sp-field">
             <label>脈拍 (回/分)</label>
-            <input type="number" placeholder="66" min="30" max="220" oninput="document.getElementById('hr_ex2').value=this.value">
+            <input type="number" placeholder="66" oninput="syncVital('hr_ex2',this.value)">
           </div>
-          <div class="vital-card-field">
+          <div class="vital-sp-field">
             <label>SpO2 (%)</label>
-            <input type="number" placeholder="96" min="70" max="100" oninput="document.getElementById('spo2_ex2').value=this.value">
+            <input type="number" placeholder="96" oninput="syncVital('spo2_ex2',this.value)">
           </div>
         </div>
       </div>
@@ -755,6 +748,12 @@ body {
 
 <script>
 document.getElementById('date').valueAsDate = new Date();
+
+// スマホ用バイタル入力をPC用hiddenフィールドに同期
+function syncVital(id, val) {
+  const el = document.getElementById(id);
+  if (el) el.value = val;
+}
 
 document.getElementById('occupation').addEventListener('change', function() {
   document.getElementById('customOccField').style.display = this.value === 'custom' ? 'block' : 'none';
