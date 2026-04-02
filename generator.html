@@ -31,6 +31,7 @@ body {
   color: var(--text);
   min-height: 100vh;
   padding: 0 0 60px;
+  overflow-x: hidden;
 }
 
 /* HEADER */
@@ -98,7 +99,8 @@ body {
 }
 
 @media (max-width: 600px) {
-  .grid-3, .grid-4 { grid-template-columns: 1fr 1fr; }
+  .grid-3 { grid-template-columns: 1fr 1fr; }
+  .grid-4 { grid-template-columns: 1fr 1fr; }
   .grid-2 { grid-template-columns: 1fr; }
 
   /* 氏名を全幅、年齢・身長を2列に */
@@ -111,8 +113,14 @@ body {
 
   .app-header { padding: 20px 16px 16px; }
   .header-title { font-size: 20px; }
-  .card { padding: 18px 14px; }
-  .main { padding: 16px 12px 0; }
+  .card { padding: 18px 12px; }
+  .main { padding: 12px 10px 0; }
+}
+
+@media (max-width: 420px) {
+  .grid-3 { grid-template-columns: 1fr; }
+  .card { padding: 16px 10px; }
+  .main { padding: 10px 8px 0; }
 }
 
 /* FIELD */
@@ -155,13 +163,16 @@ body {
 .vital-wrap {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
+  margin: 0 -4px;
+  padding: 0 4px;
 }
 .vital-grid {
   display: grid;
-  grid-template-columns: 110px 1fr 80px 75px;
-  gap: 8px;
+  grid-template-columns: 90px 1fr 68px 60px;
+  gap: 6px;
   align-items: center;
-  min-width: 340px; /* 最小幅を保証してスクロール可能に */
+  min-width: 0;
+  width: 100%;
 }
 .vital-row-label {
   font-size: 11px; font-weight: 700; color: var(--gray);
@@ -177,13 +188,22 @@ body {
 
 @media (max-width: 500px) {
   .vital-grid {
-    grid-template-columns: 90px 1fr 72px 68px;
-    gap: 5px;
-    font-size: 11px;
+    grid-template-columns: 72px 1fr 56px 50px;
+    gap: 4px;
   }
-  .vital-row-label { font-size: 10px; }
-  .vital-col-header { font-size: 9px; }
-  .field input { padding: 7px 6px; font-size: 13px; }
+  .vital-row-label { font-size: 9px; padding-top: 20px; }
+  .vital-col-header { font-size: 8px; padding: 3px 1px; }
+  .vital-grid .field input { padding: 6px 4px; font-size: 12px; }
+}
+
+@media (max-width: 380px) {
+  .vital-grid {
+    grid-template-columns: 62px 1fr 48px 44px;
+    gap: 3px;
+  }
+  .vital-row-label { font-size: 8px; }
+  .vital-col-header { font-size: 7px; }
+  .vital-grid .field input { padding: 5px 3px; font-size: 11px; }
 }
 
 /* RESULTS */
