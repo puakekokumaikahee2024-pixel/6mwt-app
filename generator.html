@@ -85,26 +85,25 @@ body {
   display: flex; align-items: center; gap: 6px;
 }
 
-/* GRID */
-.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
-.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-.grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 12px; }
+/* GRID - flexboxベースでSafari対応 */
+.grid-3 { display: flex; flex-wrap: wrap; gap: 14px; }
+.grid-3 > * { flex: 1 1 calc(33% - 14px); min-width: 0; }
+.grid-2 { display: flex; flex-wrap: wrap; gap: 14px; }
+.grid-2 > * { flex: 1 1 calc(50% - 14px); min-width: 0; }
+.grid-4 { display: flex; flex-wrap: wrap; gap: 12px; }
+.grid-4 > * { flex: 1 1 calc(25% - 12px); min-width: 0; }
 
-/* ===== 被験者基本情報 1行目: 氏名(全幅) + 年齢 + 身長 ===== */
-.grid-name-age-height {
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr;
-  gap: 14px;
-}
+/* ===== 被験者基本情報 1行目 ===== */
+.grid-name-age-height { display: flex; flex-wrap: wrap; gap: 14px; }
+.grid-name-age-height .field-name { flex: 2 1 200px; min-width: 0; }
+.grid-name-age-height .field-age,
+.grid-name-age-height .field-height { flex: 1 1 80px; min-width: 0; }
 
-@media (max-width: 600px) {
-  .grid-3, .grid-4 { grid-template-columns: 1fr 1fr; }
-  .grid-2 { grid-template-columns: 1fr; }
-
-  /* スマホ: 氏名・年齢・身長をすべて縦1列に */
-  .grid-name-age-height {
-    grid-template-columns: 1fr;
-  }
+@media only screen and (max-width: 600px) {
+  .grid-3 > *, .grid-4 > *, .grid-2 > * { flex: 1 1 100%; }
+  .grid-name-age-height .field-name,
+  .grid-name-age-height .field-age,
+  .grid-name-age-height .field-height { flex: 1 1 100%; }
 
   .app-header { padding: 20px 16px 16px; }
   .header-title { font-size: 20px; }
@@ -167,16 +166,17 @@ body {
   line-height: 1.3;
 }
 
-/* スマホ: バイタルを1行ずつのカードに */
-@media (max-width: 600px) {
-  .vital-grid { display: none; }
+/* スマホ: バイタルをカード形式に */
+@media only screen and (max-width: 600px) {
+  .vital-grid { display: none !important; }
 
-  .vital-sp { display: flex; flex-direction: column; gap: 12px; }
+  .vital-sp { display: block; }
   .vital-sp-row {
     background: #fafcff;
     border: 1.5px solid #d0dcea;
     border-radius: 10px;
     padding: 12px 14px;
+    margin-bottom: 12px;
   }
   .vital-sp-title {
     font-size: 12px; font-weight: 700; color: var(--blue);
@@ -184,10 +184,9 @@ body {
     border-bottom: 1px solid var(--blue-light);
   }
   .vital-sp-fields {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 8px;
+    display: flex; flex-wrap: wrap; gap: 8px;
   }
+  .vital-sp-field { flex: 1 1 calc(33% - 8px); min-width: 0; }
   .vital-sp-field label {
     font-size: 10px; font-weight: 700; color: var(--gray);
     display: block; margin-bottom: 4px;
@@ -205,8 +204,8 @@ body {
   }
 }
 
-@media (min-width: 601px) {
-  .vital-sp { display: none; }
+@media only screen and (min-width: 601px) {
+  .vital-sp { display: none !important; }
 }
 
 /* RESULTS */
@@ -463,12 +462,12 @@ body {
         <input type="text" id="name" placeholder="山田 太郎">
         <span class="unit">（資料上部に表示）</span>
       </div>
-      <div class="field">
+      <div class="field field-age">
         <label>年齢</label>
         <input type="number" id="age" placeholder="72" min="18" max="110">
         <span class="unit">歳</span>
       </div>
-      <div class="field">
+      <div class="field field-height">
         <label>身長</label>
         <input type="number" id="height" placeholder="162" step="0.1">
         <span class="unit">cm</span>
@@ -637,69 +636,33 @@ body {
       <div class="vital-sp-row">
         <div class="vital-sp-title">🔵 安静時①（条件①前）</div>
         <div class="vital-sp-fields">
-          <div class="vital-sp-field">
-            <label>血圧 (mmHg)</label>
-            <input type="text" placeholder="135/79" oninput="syncVital('bp_rest1',this.value)">
-          </div>
-          <div class="vital-sp-field">
-            <label>脈拍 (回/分)</label>
-            <input type="number" placeholder="62" oninput="syncVital('hr_rest1',this.value)">
-          </div>
-          <div class="vital-sp-field">
-            <label>SpO2 (%)</label>
-            <input type="number" placeholder="96" oninput="syncVital('spo2_rest1',this.value)">
-          </div>
+          <div class="vital-sp-field"><label>血圧 (mmHg)</label><input type="text" placeholder="135/79" oninput="document.getElementById('bp_rest1').value=this.value"></div>
+          <div class="vital-sp-field"><label>脈拍 (回/分)</label><input type="number" placeholder="62" oninput="document.getElementById('hr_rest1').value=this.value"></div>
+          <div class="vital-sp-field"><label>SpO2 (%)</label><input type="number" placeholder="96" oninput="document.getElementById('spo2_rest1').value=this.value"></div>
         </div>
       </div>
       <div class="vital-sp-row">
         <div class="vital-sp-title">🔴 条件①後（自由速度直後）</div>
         <div class="vital-sp-fields">
-          <div class="vital-sp-field">
-            <label>血圧 (mmHg)</label>
-            <input type="text" placeholder="152/85" oninput="syncVital('bp_ex1',this.value)">
-          </div>
-          <div class="vital-sp-field">
-            <label>脈拍 (回/分)</label>
-            <input type="number" placeholder="68" oninput="syncVital('hr_ex1',this.value)">
-          </div>
-          <div class="vital-sp-field">
-            <label>SpO2 (%)</label>
-            <input type="number" placeholder="95" oninput="syncVital('spo2_ex1',this.value)">
-          </div>
+          <div class="vital-sp-field"><label>血圧 (mmHg)</label><input type="text" placeholder="152/85" oninput="document.getElementById('bp_ex1').value=this.value"></div>
+          <div class="vital-sp-field"><label>脈拍 (回/分)</label><input type="number" placeholder="68" oninput="document.getElementById('hr_ex1').value=this.value"></div>
+          <div class="vital-sp-field"><label>SpO2 (%)</label><input type="number" placeholder="95" oninput="document.getElementById('spo2_ex1').value=this.value"></div>
         </div>
       </div>
       <div class="vital-sp-row">
         <div class="vital-sp-title">🔵 安静時②（条件②前）</div>
         <div class="vital-sp-fields">
-          <div class="vital-sp-field">
-            <label>血圧 (mmHg)</label>
-            <input type="text" placeholder="135/79" oninput="syncVital('bp_rest2',this.value)">
-          </div>
-          <div class="vital-sp-field">
-            <label>脈拍 (回/分)</label>
-            <input type="number" placeholder="62" oninput="syncVital('hr_rest2',this.value)">
-          </div>
-          <div class="vital-sp-field">
-            <label>SpO2 (%)</label>
-            <input type="number" placeholder="96" oninput="syncVital('spo2_rest2',this.value)">
-          </div>
+          <div class="vital-sp-field"><label>血圧 (mmHg)</label><input type="text" placeholder="135/79" oninput="document.getElementById('bp_rest2').value=this.value"></div>
+          <div class="vital-sp-field"><label>脈拍 (回/分)</label><input type="number" placeholder="62" oninput="document.getElementById('hr_rest2').value=this.value"></div>
+          <div class="vital-sp-field"><label>SpO2 (%)</label><input type="number" placeholder="96" oninput="document.getElementById('spo2_rest2').value=this.value"></div>
         </div>
       </div>
       <div class="vital-sp-row">
         <div class="vital-sp-title">🔴 条件②後（Borg調整直後）</div>
         <div class="vital-sp-fields">
-          <div class="vital-sp-field">
-            <label>血圧 (mmHg)</label>
-            <input type="text" placeholder="137/82" oninput="syncVital('bp_ex2',this.value)">
-          </div>
-          <div class="vital-sp-field">
-            <label>脈拍 (回/分)</label>
-            <input type="number" placeholder="66" oninput="syncVital('hr_ex2',this.value)">
-          </div>
-          <div class="vital-sp-field">
-            <label>SpO2 (%)</label>
-            <input type="number" placeholder="96" oninput="syncVital('spo2_ex2',this.value)">
-          </div>
+          <div class="vital-sp-field"><label>血圧 (mmHg)</label><input type="text" placeholder="137/82" oninput="document.getElementById('bp_ex2').value=this.value"></div>
+          <div class="vital-sp-field"><label>脈拍 (回/分)</label><input type="number" placeholder="66" oninput="document.getElementById('hr_ex2').value=this.value"></div>
+          <div class="vital-sp-field"><label>SpO2 (%)</label><input type="number" placeholder="96" oninput="document.getElementById('spo2_ex2').value=this.value"></div>
         </div>
       </div>
     </div>
@@ -748,12 +711,6 @@ body {
 
 <script>
 document.getElementById('date').valueAsDate = new Date();
-
-// スマホ用バイタル入力をPC用hiddenフィールドに同期
-function syncVital(id, val) {
-  const el = document.getElementById(id);
-  if (el) el.value = val;
-}
 
 document.getElementById('occupation').addEventListener('change', function() {
   document.getElementById('customOccField').style.display = this.value === 'custom' ? 'block' : 'none';
