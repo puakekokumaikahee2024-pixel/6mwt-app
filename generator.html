@@ -85,26 +85,23 @@ body {
   display: flex; align-items: center; gap: 6px;
 }
 
-/* GRID - flexboxベースでSafari対応 */
-.grid-3 { display: flex; flex-wrap: wrap; gap: 14px; }
-.grid-3 > * { flex: 1 1 calc(33% - 14px); min-width: 0; }
-.grid-2 { display: flex; flex-wrap: wrap; gap: 14px; }
-.grid-2 > * { flex: 1 1 calc(50% - 14px); min-width: 0; }
-.grid-4 { display: flex; flex-wrap: wrap; gap: 12px; }
-.grid-4 > * { flex: 1 1 calc(25% - 12px); min-width: 0; }
+/* GRID */
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 12px; }
 
 /* ===== 被験者基本情報 1行目 ===== */
-.grid-name-age-height { display: flex; flex-wrap: wrap; gap: 14px; }
-.grid-name-age-height .field-name { flex: 2 1 200px; min-width: 0; }
-.grid-name-age-height .field-age,
-.grid-name-age-height .field-height { flex: 1 1 80px; min-width: 0; }
+.grid-name-age-height {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 14px;
+}
 
-@media only screen and (max-width: 600px) {
-  .grid-3 > *, .grid-4 > *, .grid-2 > * { flex: 1 1 100%; }
-  .grid-name-age-height .field-name,
-  .grid-name-age-height .field-age,
-  .grid-name-age-height .field-height { flex: 1 1 100%; }
+/* スマホ用クラス（JSで付与） */
+.sp-col1 { display: grid !important; grid-template-columns: 1fr !important; }
+.sp-col2 { display: grid !important; grid-template-columns: 1fr 1fr !important; }
 
+@media (max-width: 600px) {
   .app-header { padding: 20px 16px 16px; }
   .header-title { font-size: 20px; }
   .card { padding: 18px 14px; }
@@ -165,47 +162,29 @@ body {
   background: var(--blue-light); border-radius: 4px;
   line-height: 1.3;
 }
-
-/* スマホ: バイタルをカード形式に */
-@media only screen and (max-width: 600px) {
-  .vital-grid { display: none !important; }
-
-  .vital-sp { display: block; }
-  .vital-sp-row {
-    background: #fafcff;
-    border: 1.5px solid #d0dcea;
-    border-radius: 10px;
-    padding: 12px 14px;
-    margin-bottom: 12px;
-  }
-  .vital-sp-title {
-    font-size: 12px; font-weight: 700; color: var(--blue);
-    margin-bottom: 10px; padding-bottom: 6px;
-    border-bottom: 1px solid var(--blue-light);
-  }
-  .vital-sp-fields {
-    display: flex; flex-wrap: wrap; gap: 8px;
-  }
-  .vital-sp-field { flex: 1 1 calc(33% - 8px); min-width: 0; }
-  .vital-sp-field label {
-    font-size: 10px; font-weight: 700; color: var(--gray);
-    display: block; margin-bottom: 4px;
-  }
-  .vital-sp-field input {
-    width: 100%; border: 1.5px solid #d0dcea;
-    border-radius: 8px; padding: 8px 6px;
-    font-size: 14px; font-family: 'BIZ UDPGothic', sans-serif;
-    color: var(--text); background: white;
-    outline: none; box-sizing: border-box;
-  }
-  .vital-sp-field input:focus {
-    border-color: var(--blue);
-    box-shadow: 0 0 0 3px rgba(26,95,168,0.1);
-  }
+.vital-sp { display: none; }
+.vital-sp-row {
+  background: #fafcff; border: 1.5px solid #d0dcea;
+  border-radius: 10px; padding: 12px 14px; margin-bottom: 12px;
 }
-
-@media only screen and (min-width: 601px) {
-  .vital-sp { display: none !important; }
+.vital-sp-title {
+  font-size: 12px; font-weight: 700; color: var(--blue);
+  margin-bottom: 10px; padding-bottom: 6px;
+  border-bottom: 1px solid var(--blue-light);
+}
+.vital-sp-fields { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+.vital-sp-field label {
+  font-size: 10px; font-weight: 700; color: var(--gray);
+  display: block; margin-bottom: 4px;
+}
+.vital-sp-field input {
+  width: 100%; border: 1.5px solid #d0dcea; border-radius: 8px;
+  padding: 8px 6px; font-size: 14px;
+  font-family: 'BIZ UDPGothic', sans-serif;
+  color: var(--text); background: white; outline: none; box-sizing: border-box;
+}
+.vital-sp-field input:focus {
+  border-color: var(--blue); box-shadow: 0 0 0 3px rgba(26,95,168,0.1);
 }
 
 /* RESULTS */
@@ -462,12 +441,12 @@ body {
         <input type="text" id="name" placeholder="山田 太郎">
         <span class="unit">（資料上部に表示）</span>
       </div>
-      <div class="field field-age">
+      <div class="field">
         <label>年齢</label>
         <input type="number" id="age" placeholder="72" min="18" max="110">
         <span class="unit">歳</span>
       </div>
-      <div class="field field-height">
+      <div class="field">
         <label>身長</label>
         <input type="number" id="height" placeholder="162" step="0.1">
         <span class="unit">cm</span>
@@ -600,39 +579,31 @@ body {
   <!-- バイタルサイン -->
   <div class="card">
     <div class="card-title">💓 バイタルサイン</div>
-
-    <!-- PC用グリッド -->
     <div class="vital-wrap">
-      <div class="vital-grid">
+      <div class="vital-grid" id="vitalGrid">
         <div></div>
         <div class="vital-col-header">血圧 (mmHg)<br><span style="font-size:9px;font-weight:400;">収縮期 / 拡張期</span></div>
         <div class="vital-col-header">脈拍<br><span style="font-size:9px;font-weight:400;">(回/分)</span></div>
         <div class="vital-col-header">SpO2<br><span style="font-size:9px;font-weight:400;">(%)</span></div>
-
         <div class="vital-row-label">安静時①<br><span style="font-weight:400;font-size:10px;">（条件①前）</span></div>
         <div class="field"><input type="text" id="bp_rest1" placeholder="135/79"></div>
         <div class="field"><input type="number" id="hr_rest1" placeholder="62" min="30" max="200"></div>
         <div class="field"><input type="number" id="spo2_rest1" placeholder="96" min="70" max="100"></div>
-
         <div class="vital-row-label">条件①後<br><span style="font-weight:400;font-size:10px;">（自由速度直後）</span></div>
         <div class="field"><input type="text" id="bp_ex1" placeholder="152/85"></div>
         <div class="field"><input type="number" id="hr_ex1" placeholder="68" min="30" max="220"></div>
         <div class="field"><input type="number" id="spo2_ex1" placeholder="95" min="70" max="100"></div>
-
         <div class="vital-row-label">安静時②<br><span style="font-weight:400;font-size:10px;">（条件②前）</span></div>
         <div class="field"><input type="text" id="bp_rest2" placeholder="135/79"></div>
         <div class="field"><input type="number" id="hr_rest2" placeholder="62" min="30" max="200"></div>
         <div class="field"><input type="number" id="spo2_rest2" placeholder="96" min="70" max="100"></div>
-
         <div class="vital-row-label">条件②後<br><span style="font-weight:400;font-size:10px;">（Borg調整直後）</span></div>
         <div class="field"><input type="text" id="bp_ex2" placeholder="137/82"></div>
         <div class="field"><input type="number" id="hr_ex2" placeholder="66" min="30" max="220"></div>
         <div class="field"><input type="number" id="spo2_ex2" placeholder="96" min="70" max="100"></div>
       </div>
     </div>
-
-    <!-- スマホ用カード -->
-    <div class="vital-sp">
+    <div class="vital-sp" id="vitalSp">
       <div class="vital-sp-row">
         <div class="vital-sp-title">🔵 安静時①（条件①前）</div>
         <div class="vital-sp-fields">
@@ -666,7 +637,6 @@ body {
         </div>
       </div>
     </div>
-
   </div>
 
   <!-- 計算ボタン -->
@@ -710,6 +680,48 @@ body {
 </div><!-- /main -->
 
 <script>
+// メディアクエリに頼らずJSで画面幅を判定してスマホレイアウトに切り替え
+function applySpLayout() {
+  var w = window.innerWidth;
+  var isSp = w <= 600;
+
+  // 被験者基本情報グリッド
+  var nameGrid = document.querySelector('.grid-name-age-height');
+  if (nameGrid) nameGrid.style.gridTemplateColumns = isSp ? '1fr' : '2fr 1fr 1fr';
+
+  // grid-3（体重・性別・指導日）
+  document.querySelectorAll('.grid-3').forEach(function(el) {
+    el.style.gridTemplateColumns = isSp ? '1fr' : '1fr 1fr 1fr';
+  });
+
+  // grid-2
+  document.querySelectorAll('.grid-2').forEach(function(el) {
+    el.style.gridTemplateColumns = isSp ? '1fr' : '1fr 1fr';
+  });
+
+  // バイタルサイン切り替え
+  var vitalGrid = document.getElementById('vitalGrid');
+  var vitalSp = document.getElementById('vitalSp');
+  if (vitalGrid && vitalSp) {
+    vitalGrid.style.display = isSp ? 'none' : 'grid';
+    vitalSp.style.display = isSp ? 'block' : 'none';
+  }
+
+  // カード・ヘッダーのpadding
+  if (isSp) {
+    document.querySelectorAll('.card').forEach(function(el) { el.style.padding = '18px 14px'; });
+    var header = document.querySelector('.app-header');
+    if (header) header.style.padding = '20px 16px 16px';
+    var main = document.querySelector('.main');
+    if (main) main.style.padding = '16px 12px 0';
+    var title = document.querySelector('.header-title');
+    if (title) title.style.fontSize = '20px';
+  }
+}
+
+window.addEventListener('DOMContentLoaded', applySpLayout);
+window.addEventListener('resize', applySpLayout);
+
 document.getElementById('date').valueAsDate = new Date();
 
 document.getElementById('occupation').addEventListener('change', function() {
